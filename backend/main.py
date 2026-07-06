@@ -62,7 +62,7 @@ def sing_in(driver: WebDriver, timeout: int) -> None:
     return
 
 
-def select_hotel_(driver: WebDriver, timeout: int, hotel_name: str) -> None:
+def select_hotel(driver: WebDriver, timeout: int, hotel_name: str) -> None:
     wait = WebDriverWait(driver, timeout)
 
     wait.until(ec.invisibility_of_element_located(
@@ -83,6 +83,15 @@ def select_hotel_(driver: WebDriver, timeout: int, hotel_name: str) -> None:
     return
 
 
+def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
+    wait = WebDriverWait(driver, timeout)
+
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, f'//div[contains(@class, "d{push.get("day")}")]'))).click()
+
+    return
+
+
 def scraping(headless: bool, timeout: int, push_list: list[dict]) -> None:
     if push_list:
         driver = get_driver(headless)
@@ -91,7 +100,11 @@ def scraping(headless: bool, timeout: int, push_list: list[dict]) -> None:
         sing_in(driver, timeout)
 
         for push in push_list:
-            select_hotel_(driver, timeout, push['hotel_name'])
+            select_hotel(driver, timeout, push['hotel_name'])
+
+            driver.get(f"{os.environ["BASE_URL"]}/crm/alerts/configuration")
+
+            #create_push(driver, timeout, push)
 
     return
 

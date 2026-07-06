@@ -1,10 +1,16 @@
 [
   {
     "id": "Push 1",
-    "hotel_name": "Royalton CHIC Antigua, An Autograph Collection All-Inclusive Resort",
-    "title": "🌴 Feel like exploring today?",
-    "description": "Discover experiences waiting...",
-    "time": "10:00",
-    "url": "https://..."
+    "hotel_name": "Royalton Negril, An Autograph Collection All-Inclusive Resort",
+    "day": "2026-07-06",
+    "internal_name": "test",
+    "send_time": "17:00",
+    "start_date": "2026-07-08",
+    "end_date": "2026-07-15",
+    "img": "taboo-2-6654c8cb6a531.jpg",
+    "title": "✨ Discover a different side of the Riviera Maya",
+    "message_content": "Explore curated experiences beyond the resort.",
+    "url": "https://royalton.nexustours.com/services/mexico/paraiso-de-la-bonita,-a-luxury-collection-resort,-riviera-maya/119431?utm_source=ry_app&utm_medium=paraiso_de_la_bonita&utm_campaign=push_1",
+    "button_text": "Explore Tours"
   }
 ]
