@@ -1,15 +1,15 @@
 [
   {
-    "id": "Push 1",
-    "hotel_name": "Mystique Holbox by Royalton, A Tribute Portfolio Resort",
-    "day": "2026-07-06",
+    "id": "Push 12",
+    "hotel_name": "Royalton Saint Lucia, An Autograph Collection All-Inclusive Resort",
     "internal_name": "test",
     "send_time": "18:00",
-    "end_date": "2026-07-25",
-    "img": "k1.jpg",
-    "title": "✨ Discover a different side of the Riviera Maya",
-    "message_content": "Explore curated experiences beyond the resort.",
-    "url": "https://royalton.nexustours.com/services/mexico/paraiso-de-la-bonita,-a-luxury-collection-resort,-riviera-maya/119431?utm_source=ry_app&utm_medium=paraiso_de_la_bonita&utm_campaign=push_1",
+    "star_date": "2026-10-01",
+    "end_date": "2026-10-29",
+    "img": "Soufriere.jpg",
+    "title": "🌿 Rainforest trails, coastal views and hidden gems",
+    "message_content": "Explore the island at your own pace.",
+    "url": "https://royalton.nexustours.com/services/santa-lucia/royalton-saint-lucia,-an-autograph-collection-all-inclusive-resort/123220&utm_source=ry_app&utm_medium=royalton_saint_lucia&utm_campaign=push_12",
     "button_text": "Explore Tours"
   }
 ]

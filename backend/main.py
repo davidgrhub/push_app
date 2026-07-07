@@ -1,7 +1,8 @@
-import os
 import json
+import os
 import time
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -64,6 +65,7 @@ def sing_in(driver: WebDriver, timeout: int) -> None:
 
 
 def select_hotel(driver: WebDriver, timeout: int, hotel_name: str) -> None:
+    time.sleep(2)
     wait = WebDriverWait(driver, timeout)
 
     wait.until(ec.invisibility_of_element_located(
@@ -83,6 +85,20 @@ def select_hotel(driver: WebDriver, timeout: int, hotel_name: str) -> None:
 
     return
 
+def calculate_click_date(target_date_str: str) -> str:
+    target_date = datetime.strptime(target_date_str, "%Y-%m-%d")
+
+    target_day_of_week = target_date.weekday()
+
+    today = datetime.now()
+
+    current_monday = today - timedelta(days=today.weekday())
+
+    column_date = current_monday + timedelta(days=target_day_of_week)
+
+    return column_date.strftime("%Y-%m-%d")
+
+
 
 def change_int(driver: WebDriver, element: WebElement, value: str) -> None:
     driver.execute_script(
@@ -95,13 +111,14 @@ def change_int(driver: WebDriver, element: WebElement, value: str) -> None:
 
 
 def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
+    time.sleep(2)
     wait = WebDriverWait(driver, timeout)
 
     wait.until(ec.invisibility_of_element_located(
         (By.CSS_SELECTOR, ".el-loading-mask")))
 
     wait.until(ec.visibility_of_element_located(
-        (By.XPATH, f'//div[contains(@class, "d{push["day"]}")]'))).click()
+        (By.XPATH, f'//div[contains(@class, "d{calculate_click_date(push['star_date'])}")]'))).click()
     time.sleep(2)
 
     internal_name = wait.until(ec.visibility_of_element_located(
@@ -118,7 +135,7 @@ def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
 
     strat_date = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//input[@placeholder="Start"]')))
-    change_int(driver, strat_date, push['day'])
+    change_int(driver, strat_date, push['star_date'])
     time.sleep(1.5)
 
     end_date = wait.until(ec.visibility_of_element_located(
@@ -164,8 +181,11 @@ def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
 
     button_text = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//input[@placeholder="View more"]')))
-    button_text.send_keys(push['url'])
+    button_text.send_keys(push['button_text'])
     time.sleep(1.5)
+
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//button[contains(@class, "brand-button") and .//span[text()="Save"]]'))).click()
 
     return
 
@@ -183,6 +203,10 @@ def scraping(headless: bool, timeout: int, push_list: list[dict]) -> None:
             driver.get(f"{os.environ["BASE_URL"]}/crm/alerts/configuration")
 
             create_push(driver, timeout, push)
+
+            driver.get(f"{os.environ["BASE_URL"]}/dashboard/main")
+
+        driver.quit()
 
     return
 
