@@ -69,7 +69,7 @@ def select_hotel(driver: WebDriver, timeout: int, hotel_name: str) -> None:
     wait = WebDriverWait(driver, timeout)
 
     wait.until(ec.invisibility_of_element_located(
-        (By.CSS_SELECTOR, ".el-loading-mask")))
+        (By.CSS_SELECTOR, ".el-loading-mask is-fullscreen")))
 
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//div[@class="topbar__hotel-search"]'))).click()
@@ -115,11 +115,10 @@ def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
     wait = WebDriverWait(driver, timeout)
 
     wait.until(ec.invisibility_of_element_located(
-        (By.CSS_SELECTOR, ".el-loading-mask")))
+        (By.CSS_SELECTOR, ".el-loading-mask is-fullscreen")))
 
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, f'//div[contains(@class, "d{calculate_click_date(push['star_date'])}")]'))).click()
-    time.sleep(2)
 
     internal_name = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//input[@placeholder="Internal name"]')))
@@ -129,34 +128,28 @@ def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
     send_time = wait.until(ec.visibility_of_element_located(
         (By.XPATH, f'//input[@placeholder="Select min"]')))
     change_int(driver, send_time, push['send_time'])
-    time.sleep(1.5)
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//button[@class="el-time-panel__btn confirm"]'))).click()
-
-    strat_date = wait.until(ec.visibility_of_element_located(
-        (By.XPATH, '//input[@placeholder="Start"]')))
-    change_int(driver, strat_date, push['star_date'])
-    time.sleep(1.5)
 
     end_date = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//input[@placeholder="End"]')))
     change_int(driver, end_date, push['end_date'])
-    time.sleep(1.5)
+    strat_date = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//input[@placeholder="Start"]')))
+    change_int(driver, strat_date, push['star_date'])
 
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//div[@class="image-library-button"]'))).click()
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, f'//div[contains(@class, "title") and normalize-space()="{push['img']}"]'))).click()
-    time.sleep(2)
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//button[@class="el-button el-button--primary el-button--default '
                    'is-round brand-button right"]'))).click()
-    time.sleep(2)
 
     title = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//input[@placeholder="Enter title"]')))
     title.send_keys(push['title'])
-    time.sleep(2)
+    time.sleep(1.5)
 
     message_content = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//textarea[@placeholder="Enter message"]')))
@@ -167,14 +160,12 @@ def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
         (By.XPATH, '//div[@class="el-select__selected-item el-select__placeholder is-transparent"]'))).click()
     wait.until(ec.element_to_be_clickable(
         (By.XPATH, '//li[@role="option" and .//span[normalize-space()="External website link"]]'))).click()
-    time.sleep(1.5)
 
     url = wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//div[@class="el-input el-input--large el-input-group el-input-group--prepend"]'
                    '//div[@class="el-input__wrapper"]'
                    '//input[@class="el-input__inner"]')))
     url.send_keys(push['url'])
-    time.sleep(1.5)
 
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//label[@class="el-checkbox el-checkbox--large alerts-basic-info__url-checkbox"]'))).click()
@@ -186,6 +177,7 @@ def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
 
     wait.until(ec.visibility_of_element_located(
         (By.XPATH, '//button[contains(@class, "brand-button") and .//span[text()="Save"]]'))).click()
+    time.sleep(2)
 
     return
 
@@ -224,4 +216,4 @@ def main(headless: bool = True, timeout: int = 60) -> Result:
 
 
 if __name__ == '__main__':
-    main(headless=False)
+    main()
