@@ -8,6 +8,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.firefox import GeckoDriverManager
@@ -83,11 +84,88 @@ def select_hotel(driver: WebDriver, timeout: int, hotel_name: str) -> None:
     return
 
 
+def change_int(driver: WebDriver, element: WebElement, value: str) -> None:
+    driver.execute_script(
+        "arguments[0].value = arguments[1]; "
+        "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));"
+        "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+        element, value)
+
+    return
+
+
 def create_push(driver: WebDriver, timeout: int, push: dict) -> None:
     wait = WebDriverWait(driver, timeout)
 
+    wait.until(ec.invisibility_of_element_located(
+        (By.CSS_SELECTOR, ".el-loading-mask")))
+
     wait.until(ec.visibility_of_element_located(
-        (By.XPATH, f'//div[contains(@class, "d{push.get("day")}")]'))).click()
+        (By.XPATH, f'//div[contains(@class, "d{push["day"]}")]'))).click()
+    time.sleep(2)
+
+    internal_name = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//input[@placeholder="Internal name"]')))
+    internal_name.send_keys(push['internal_name'])
+    time.sleep(1.5)
+
+    send_time = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, f'//input[@placeholder="Select min"]')))
+    change_int(driver, send_time, push['send_time'])
+    time.sleep(1.5)
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//button[@class="el-time-panel__btn confirm"]'))).click()
+
+    strat_date = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//input[@placeholder="Start"]')))
+    change_int(driver, strat_date, push['day'])
+    time.sleep(1.5)
+
+    end_date = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//input[@placeholder="End"]')))
+    change_int(driver, end_date, push['end_date'])
+    time.sleep(1.5)
+
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//div[@class="image-library-button"]'))).click()
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, f'//div[contains(@class, "title") and normalize-space()="{push['img']}"]'))).click()
+    time.sleep(2)
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//button[@class="el-button el-button--primary el-button--default '
+                   'is-round brand-button right"]'))).click()
+    time.sleep(2)
+
+    title = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//input[@placeholder="Enter title"]')))
+    title.send_keys(push['title'])
+    time.sleep(2)
+
+    message_content = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//textarea[@placeholder="Enter message"]')))
+    message_content.send_keys(push['message_content'])
+    time.sleep(2)
+
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//div[@class="el-select__selected-item el-select__placeholder is-transparent"]'))).click()
+    wait.until(ec.element_to_be_clickable(
+        (By.XPATH, '//li[@role="option" and .//span[normalize-space()="External website link"]]'))).click()
+    time.sleep(1.5)
+
+    url = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//div[@class="el-input el-input--large el-input-group el-input-group--prepend"]'
+                   '//div[@class="el-input__wrapper"]'
+                   '//input[@class="el-input__inner"]')))
+    url.send_keys(push['url'])
+    time.sleep(1.5)
+
+    wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//label[@class="el-checkbox el-checkbox--large alerts-basic-info__url-checkbox"]'))).click()
+
+    button_text = wait.until(ec.visibility_of_element_located(
+        (By.XPATH, '//input[@placeholder="View more"]')))
+    button_text.send_keys(push['url'])
+    time.sleep(1.5)
 
     return
 
@@ -104,7 +182,7 @@ def scraping(headless: bool, timeout: int, push_list: list[dict]) -> None:
 
             driver.get(f"{os.environ["BASE_URL"]}/crm/alerts/configuration")
 
-            #create_push(driver, timeout, push)
+            create_push(driver, timeout, push)
 
     return
 
